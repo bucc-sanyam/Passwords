@@ -16,7 +16,6 @@ from rest_framework.generics import (
 )
 
 
-
 class passwordList(GenericAPIView):
     def get(self, request, *args, **kwargs):
         email = request.query_params['email']
@@ -28,7 +27,8 @@ class passwordList(GenericAPIView):
 class WebsiteCheck(GenericAPIView):
     def get(self, request, *args, **kwargs):
         website = request.query_params['website']
-        name_count = WebsiteName.objects.filter(website=website).count()
+        userID = request.query_params['userID']
+        name_count = WebsiteName.objects.filter(website=website, userID=userID).count()
         response = False if name_count == 0 else True
         return JsonResponse(response, content_type='application/json', safe=False)
 
@@ -41,17 +41,12 @@ class WebsiteListView(ListAPIView):
 class WebsiteDetailView(RetrieveAPIView):
     queryset = WebsiteName.objects.all()
     serializer_class = WebsiteSerializer
+    lookup_field = 'website'
 
 
 class WebsiteCreateView(CreateAPIView):
     queryset = WebsiteName.objects.all()
     serializer_class = WebsiteSerializer
-
-
-    # def perform_create(self, serializer):
-    #     website = self.request.data
-    #     response = serializer.save(website)
-    #     return Response(response)
 
 
 class WebsiteUpdateView(UpdateAPIView):
